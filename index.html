@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#176b56">
+  <meta name="description" content="가볍게 계산하고, 필요한 순간 다시 꺼내 보세요. 기본·공학 계산, 메모를 붙이는 계산 기록, 수량과 단가로 만드는 계산노트. 무료 웹 계산기 calc.">
+  <meta name="application-name" content="calc">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta property="og:title" content="calc · 가볍게 계산하고, 편하게 기록하세요">
+  <meta property="og:description" content="기본·공학 계산부터 나만의 계산노트까지. 필요한 계산을 한곳에서.">
+  <meta property="og:type" content="website">
+  <title>calc · 계산과 기록을 한곳에</title>
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./notes.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-calc" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M8 6h8M8 11h1m6 0h1M8 15h1m6 0h1M8 19h1m6 0h1"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 16V3m-4 4 4-4 4 4M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16l-6-4z"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 1 7M3 4v6h6M12 7v5l3 2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v4h16v-4"/></symbol>
+    <symbol id="i-backspace" viewBox="0 0 24 24"><path d="M9 5h11v14H9l-7-7zM12 9l5 6m0-6-5 6"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 13.6A9 9 0 0 1 10.4 3.5a9 9 0 1 0 10.1 10.1Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4.1 1.9c-1 .7-1.6 1-1.6 2.6M12 17h.01"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m15 5 4 4M4 20l5-1L20 8a2.8 2.8 0 0 0-4-4L5 15z"/></symbol>
+  </defs></svg>
+
+  <a class="skip-link" href="#main">계산기로 바로가기</a>
+  <header class="app-header">
+    <a class="brand" href="./" aria-label="calc 홈">
+      <span class="brand-icon" aria-hidden="true"><span>+</span><span>−</span><span>×</span><span>=</span></span>
+      <span class="wordmark">calc<span>.</span></span>
+    </a>
+    <nav class="workspace-nav" aria-label="작업 공간" role="tablist">
+      <button id="tab-calc" class="nav-tab active" role="tab" aria-selected="true" aria-controls="calculator-view" data-view="calc"><svg class="icon"><use href="#i-calc"/></svg>계산기</button>
+      <button id="tab-notes" class="nav-tab" role="tab" aria-selected="false" aria-controls="notes-view" data-view="notes" tabindex="-1"><svg class="icon"><use href="#i-note"/></svg>계산노트</button>
+    </nav>
+    <div class="header-actions">
+      <button id="install-button" class="button install-button" hidden><svg class="icon"><use href="#i-download"/></svg><span>앱 설치</span></button>
+      <button id="theme-button" class="icon-button" aria-label="어두운 테마로 변경" title="테마 변경"><svg class="icon"><use href="#i-moon"/></svg></button>
+      <button id="help-button" class="icon-button" aria-label="사용 안내 및 단축키" title="사용 안내"><svg class="icon"><use href="#i-help"/></svg></button>
+    </div>
+  </header>
+
+  <div id="update-banner" class="update-banner" hidden>새로운 버전이 준비됐어요. <button id="update-button">업데이트</button></div>
+  <main id="main" class="app-main">
+    <section id="calculator-view" role="tabpanel" aria-labelledby="tab-calc">
+      <div class="workspace-heading"><div><p class="eyebrow">YOUR EVERYDAY COMPANION</p><h1>계산은 가볍게<span>.</span></h1><p class="intro">필요한 계산은 바로, 기억할 계산은 오래.</p></div><span class="local-badge"><span></span>내 기기에 저장</span></div>
+      <div class="calculator-layout">
+        <section class="calculator-card" aria-label="계산기">
+          <div class="calculator-toolbar">
+            <div class="mode-switch" role="group" aria-label="계산 모드"><button id="basic-mode" class="selected" aria-pressed="true">기본</button><button id="scientific-mode" aria-pressed="false">공학</button></div>
+            <div class="calculator-tools"><button id="angle-button" class="angle-button" title="각도 단위 변경" aria-label="각도 단위: DEG">DEG</button><button id="backspace-button" class="icon-button" aria-label="한 글자 지우기" title="한 글자 지우기 · Backspace"><svg class="icon"><use href="#i-backspace"/></svg></button></div>
+          </div>
+          <div class="calc-display">
+            <div class="display-label"><span id="expression-caption">계산식</span><span id="precision-label">십진 계산</span></div>
+            <label class="sr-only" for="expression">계산식</label>
+            <input id="expression" type="text" inputmode="none" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="2048" placeholder="0" aria-describedby="calculation-status">
+            <div class="result-line"><span id="approximation" class="approximation" hidden>≈</span><output id="result" for="expression" aria-live="polite" aria-atomic="true">0</output></div>
+            <div id="calculation-status" class="calculation-status" role="status">숫자판이나 키보드로 입력하세요</div>
+          </div>
+          <div id="scientific-keys" class="scientific-keys" hidden aria-label="공학 함수">
+            <button data-insert="sin(">sin</button><button data-insert="cos(">cos</button><button data-insert="tan(">tan</button><button data-insert="sqrt(" aria-label="제곱근">√</button><button data-insert="^2" aria-label="제곱">x²</button><button data-insert="^" aria-label="거듭제곱">xʸ</button>
+            <button data-insert="log(">log</button><button data-insert="ln(">ln</button><button data-insert="π" aria-label="원주율">π</button><button data-insert="e" aria-label="자연상수">e</button><button data-insert="!" aria-label="팩토리얼">n!</button><button data-insert="abs(" aria-label="절댓값">|x|</button>
+          </div>
+          <div id="keypad" class="keypad" aria-label="숫자판">
+            <button class="key key-utility key-clear" data-action="clear" aria-label="모두 지우기">AC</button><button class="key key-utility" data-action="parenthesis" aria-label="괄호">( )</button><button class="key key-utility" data-insert="%" aria-label="퍼센트">%</button><button class="key key-operator" data-insert="÷" aria-label="나누기">÷</button>
+            <button class="key" data-insert="7">7</button><button class="key" data-insert="8">8</button><button class="key" data-insert="9">9</button><button class="key key-operator" data-insert="×" aria-label="곱하기">×</button>
+            <button class="key" data-insert="4">4</button><button class="key" data-insert="5">5</button><button class="key" data-insert="6">6</button><button class="key key-operator" data-insert="−" aria-label="빼기">−</button>
+            <button class="key" data-insert="1">1</button><button class="key" data-insert="2">2</button><button class="key" data-insert="3">3</button><button class="key key-operator" data-insert="+" aria-label="더하기">+</button>
+            <button class="key key-sign" data-action="sign" aria-label="부호 바꾸기">+/−</button><button class="key" data-insert="0">0</button><button class="key" data-insert="." aria-label="소수점">.</button><button class="key key-equals" data-action="equals" aria-label="계산하기">=</button>
+          </div>
+          <div class="calculation-actions"><button id="save-button" class="text-button" disabled><svg class="icon"><use href="#i-bookmark"/></svg>이름 붙여 저장</button><div><button id="copy-button" class="icon-button" aria-label="계산 결과 복사" title="결과 복사" disabled><svg class="icon"><use href="#i-copy"/></svg></button><button id="share-button" class="icon-button" aria-label="계산식과 결과 공유" title="계산 공유" disabled><svg class="icon"><use href="#i-share"/></svg></button></div></div>
+        </section>
+
+        <aside id="history-panel" class="history-panel" aria-labelledby="history-heading">
+          <div class="history-heading"><div><svg class="icon"><use href="#i-history"/></svg><h2 id="history-heading">계산 기록</h2><span id="history-count" class="count-badge">0</span></div><button id="export-history" class="icon-button" aria-label="계산 기록 내보내기" title="기록 내보내기" disabled><svg class="icon"><use href="#i-download"/></svg></button></div>
+          <div class="history-filters"><div class="filter-tabs" role="group" aria-label="기록 필터"><button id="all-history" class="active" aria-pressed="true">전체</button><button id="saved-history" aria-pressed="false">저장한 계산</button></div><button id="clear-history" class="subtle-button" disabled>모두 지우기</button></div>
+          <label class="history-search"><svg class="icon"><use href="#i-search"/></svg><input id="history-search" type="search" placeholder="이름이나 계산식 검색" aria-label="계산 기록 검색"></label>
+          <p id="history-storage-warning" class="storage-warning" role="status" hidden></p>
+          <div id="history-list" class="history-list"></div>
+          <div class="history-tip"><span class="tip-icon">↖</span><p>기록을 누르면 다시 계산할 수 있어요.<br><strong>이름을 붙이면</strong> 더 쉽게 찾을 수 있고요.</p></div>
+        </aside>
+      </div>
+      <div class="below-calculator"><span><kbd>Enter</kbd> 계산하기 <span class="dot-separator">·</span> <kbd>Esc</kbd> 모두 지우기</span><button id="open-notes" class="text-button">여러 항목을 계산한다면, 계산노트 <svg class="icon"><use href="#i-arrow"/></svg></button></div>
+    </section>
+    <section id="notes-view" role="tabpanel" aria-labelledby="tab-notes" hidden><div class="workspace-heading"><div><p class="eyebrow">A LITTLE MORE ORGANIZED</p><h1>숫자에 맥락을<span>.</span></h1><p class="intro">수량과 단가를 바꿔가며, 나만의 계산노트를 만드세요.</p></div><span class="local-badge"><span></span>자동 저장</span></div><div id="notes-container"></div></section>
+  </main>
+  <footer class="app-footer"><span class="footer-wordmark">calc.</span><p>계산과 기록, 필요한 만큼 간단하게.</p><button id="privacy-button">저장 안내</button></footer>
+
+  <dialog id="save-dialog" class="app-dialog"><form id="save-form"><div class="dialog-heading"><h2>계산에 이름 붙이기</h2><button type="button" class="icon-button" data-close-dialog aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-description">다시 보고 싶은 계산을 기억하기 쉽게 남겨 두세요.</p><div id="save-preview" class="save-preview"></div><label class="field-label" for="calculation-name">이름</label><input id="calculation-name" class="field-input" maxlength="80" required placeholder="예: 이번 달 재료비" autocomplete="off"><label class="field-label" for="calculation-memo">메모 <span>선택</span></label><textarea id="calculation-memo" class="field-input" rows="3" maxlength="500" placeholder="이 계산에 대해 기억할 내용을 적어 보세요."></textarea><div class="dialog-actions"><button type="button" class="button" data-close-dialog>취소</button><button type="submit" class="button button-primary">저장하기</button></div></form></dialog>
+  <dialog id="confirm-dialog" class="app-dialog small-dialog"><form method="dialog"><h2 id="confirm-title">기록을 지울까요?</h2><p id="confirm-message" class="dialog-description"></p><div class="dialog-actions"><button class="button" value="cancel">취소</button><button class="button button-danger" value="confirm">지우기</button></div></form></dialog>
+  <dialog id="help-dialog" class="app-dialog"><div class="dialog-heading"><h2>조금 더 편하게 쓰기</h2><button class="icon-button" data-close-dialog aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="help-content"><h3>키보드로 바로 계산하세요</h3><dl class="shortcut-list"><div><dt>계산하고 기록 남기기</dt><dd><kbd>Enter</kbd> 또는 <kbd>=</kbd></dd></div><div><dt>모두 지우기</dt><dd><kbd>Esc</kbd></dd></div><div><dt>한 글자 지우기</dt><dd><kbd>Backspace</kbd></dd></div><div><dt>계산식 수정</dt><dd><kbd>←</kbd> <kbd>→</kbd> 또는 계산식 터치</dd></div></dl><h3>계산 규칙</h3><p>곱셈·나눗셈을 덧셈·뺄셈보다 먼저 계산합니다. 괄호로 순서를 지정할 수 있어요.</p><p><strong>%는 100으로 나누기입니다.</strong> <code>200 × 10% = 20</code>, <code>200 + 10% = 200.1</code>로 계산합니다. 10%를 더하려면 <code>200 × 1.1</code>을 입력하세요.</p><p>공학 모드의 <strong>DEG</strong>는 도, <strong>RAD</strong>는 라디안입니다. 삼각함수·로그와 일부 나눗셈은 근삿값으로 표시합니다. <strong>≈</strong>가 붙은 값은 반올림된 값이에요.</p><h3>기록과 설치</h3><p><strong>=</strong>을 누르면 계산이 기록됩니다. 이름을 붙여 저장하거나, 기록을 눌러 다시 계산할 수 있어요.</p><p>휴대전화 브라우저 메뉴의 ‘홈 화면에 추가’를 이용하면 앱처럼 열 수 있습니다. 처음 접속해 필요한 파일을 받은 뒤에는 오프라인 계산도 가능해요.</p></div></dialog>
+  <dialog id="privacy-dialog" class="app-dialog"><div class="dialog-heading"><h2>내 계산은 내 기기에</h2><button class="icon-button" data-close-dialog aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="help-content"><p>계산식, 메모, 계산노트와 테마 설정은 현재 브라우저의 저장 공간에 보관합니다. 계산 내용을 서버로 전송하지 않습니다.</p><p>다른 기기나 브라우저와 자동으로 동기화되지 않습니다. 브라우저 데이터를 지우거나 비공개 창을 닫으면 기록이 사라질 수 있으니, 필요한 기록은 내보내기로 보관하세요.</p><p>이름 없는 계산은 최근 200개까지 자동 보관합니다. 이름을 붙인 계산은 최대 1,000개까지 저장하며 자동 정리에서 제외됩니다. 공유는 공유 버튼을 직접 눌렀을 때만 진행됩니다.</p><p>웹사이트 제공 과정에서는 GitHub Pages의 일반적인 접속 처리가 이루어집니다.</p></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden><svg class="icon"><use href="#i-check"/></svg><span id="toast-message"></span><button id="toast-action" hidden>되돌리기</button></div>
+  <noscript><div class="noscript-message">계산기를 사용하려면 브라우저에서 JavaScript를 켜 주세요. 계산은 기기 안에서 이루어집니다.</div></noscript>
+</body>
+</html>

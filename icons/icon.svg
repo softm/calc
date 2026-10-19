@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">calc 계산기</title>
+  <rect x="8" y="8" width="496" height="496" rx="112" fill="#176b56"/>
+  <g fill="none" stroke="#f9fcf8" stroke-width="22" stroke-linecap="round">
+    <path d="M134 171h72M170 135v72"/>
+    <path d="M306 171h72"/>
+    <path d="m144 316 52 52m0-52-52 52"/>
+    <path d="M306 326h72M306 358h72"/>
+  </g>
+</svg>

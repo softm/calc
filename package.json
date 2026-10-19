@@ -1,0 +1,14 @@
+{
+  "name": "calc",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "설치 없이 시작하는 로컬 계산기와 계산 노트",
+  "scripts": {
+    "test": "node --test",
+    "check": "node --experimental-vm-modules tools/check-site.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
