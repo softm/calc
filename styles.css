@@ -10,3 +10,5 @@ body[data-theme="dark"]{color-scheme:dark;--canvas:#131d18;--surface:#1d2921;--s
 
 .storage-warning{padding:12px 13px;border:1px solid #e1bd7d;border-radius:10px;background:#fff9e9;color:#795316;font-size:11px;line-height:1.7;margin:12px 0 0}
 body[data-theme="dark"] .notes-btn-primary{background:#3c7856;color:#fff;border-color:#3c7856}
+
+@media(max-width:440px){.nav-tab{padding:9px 10px;font-size:11px}.nav-tab .icon{display:none}}

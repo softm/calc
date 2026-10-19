@@ -1,5 +1,5 @@
 /* Bump this value whenever an offline asset changes. */
-const CACHE_VERSION = '2026-10-19-v3';
+const CACHE_VERSION = '2026-10-19-v4';
 const SCOPE_URL = new URL(self.registration.scope);
 const CACHE_PREFIX = 'calc-static:' + SCOPE_URL.pathname + ':';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;

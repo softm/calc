@@ -2,6 +2,8 @@
 
 빠르게 계산하고, 기록을 다시 꺼내 보고, 항목을 고쳐 쓰는 한국어 계산기입니다.
 
+![예시 계산을 입력한 calc 기본 화면](docs/calculator-desktop.jpg)
+
 | 항목 | 내용 |
 | --- | --- |
 | 배포 주소 | [softm.github.io/calc](https://softm.github.io/calc/) |
@@ -117,3 +119,4 @@ GitHub Pages와 같은 하위 경로까지 확인하려면 저장소의 부모 �
 | sw.js | 오프라인 자원과 업데이트 |
 | tests/ | 자동 테스트 |
 | tools/check-site.mjs | 정적 사이트 배포 전 검사 |
+| tools/responsive-preview.html | 개발 중 화면 너비별 배치 확인 |
