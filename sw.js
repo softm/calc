@@ -1,5 +1,5 @@
 /* Bump this value whenever an offline asset changes. */
-const CACHE_VERSION = '2026-10-20-stitch-v1';
+const CACHE_VERSION = '2026-10-20-store-v1';
 const SCOPE_URL = new URL(self.registration.scope);
 const CACHE_PREFIX = 'calc-static:' + SCOPE_URL.pathname + ':';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
@@ -12,7 +12,9 @@ const PRECACHE_ASSETS = [
   './engine.js',
   './input.js',
   './notes.js',
-  './notes.css',\n  './stitch.css',
+  './notes.css',
+  './stitch.css',
+  './privacy.html',
   './manifest.webmanifest',
   './icons/icon.svg',
   './icons/icon-192.png',
