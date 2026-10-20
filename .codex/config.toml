@@ -1,0 +1,15 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+# Google Stitch remote MCP.
+# Keep the API key out of this public repository. Codex reads it from
+# the local STITCH_API_KEY environment variable and sends it only as
+# the X-Goog-Api-Key header to the Stitch MCP endpoint.
+[mcp_servers.stitch]
+url = "https://stitch.googleapis.com/mcp"
+enabled = true
+startup_timeout_sec = 30
+tool_timeout_sec = 300
+default_tools_approval_mode = "prompt"
+
+[mcp_servers.stitch.env_http_headers]
+X-Goog-Api-Key = "STITCH_API_KEY"
