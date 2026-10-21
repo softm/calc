@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./notes.css">
   <link rel="stylesheet" href="./stitch.css">
+  <link rel="stylesheet" href="./adfit.css">
   <script src="./adfit-config.js"></script>
   <script src="./adfit.js" defer></script>
   <script type="module" src="./app.js"></script>
@@ -45,6 +46,7 @@
   </defs></svg>
 
   <a class="skip-link" href="#main">계산기로 바로가기</a>
+  <div class="app-viewport" id="app-viewport">
   <header class="app-header">
     <a class="brand" href="./" aria-label="calc 홈">
       <span class="brand-icon" aria-hidden="true"><span>+</span><span>−</span><span>×</span><span>=</span></span>
@@ -102,14 +104,23 @@
         </aside>
       </div>
       <div class="below-calculator"><span><kbd>Enter</kbd> 계산하기 <span class="dot-separator">·</span> <kbd>Esc</kbd> 모두 지우기</span><button id="open-notes" class="text-button">여러 항목을 계산한다면, 계산노트 <svg class="icon"><use href="#i-arrow"/></svg></button></div>
-      <aside class="adfit-zone" id="calculator-ad" aria-label="광고" hidden>
-        <span class="adfit-label">광고</span>
-        <div class="adfit-host" data-adfit-host></div>
-      </aside>
     </section>
     <section id="notes-view" role="tabpanel" aria-labelledby="tab-notes" hidden><div class="workspace-heading"><div><p class="eyebrow">A LITTLE MORE ORGANIZED</p><h1>숫자에 맥락을<span>.</span></h1><p class="intro">수량과 단가를 바꿔가며, 나만의 계산노트를 만드세요.</p></div><span class="local-badge"><span></span>자동 저장</span></div><div id="notes-container"></div></section>
   </main>
   <footer class="app-footer"><span class="footer-wordmark">calc.</span><p>계산과 기록, 필요한 만큼 간단하게.</p><button id="privacy-button">저장 안내</button></footer>
+  </div>
+
+  <aside class="adfit-zone" id="calculator-ad" aria-label="하단 광고" data-state="idle" data-collapsed="false" hidden>
+    <div class="adfit-toolbar">
+      <span class="adfit-label">광고</span>
+      <button type="button" class="adfit-toggle" id="calculator-ad-toggle" aria-controls="calculator-ad-panel" aria-expanded="true">
+        <span data-adfit-toggle-label>광고 접기</span><span data-adfit-toggle-icon aria-hidden="true">⌄</span>
+      </button>
+    </div>
+    <div class="adfit-panel" id="calculator-ad-panel">
+      <div class="adfit-host" data-adfit-host></div>
+    </div>
+  </aside>
 
   <dialog id="save-dialog" class="app-dialog"><form id="save-form"><div class="dialog-heading"><h2>계산에 이름 붙이기</h2><button type="button" class="icon-button" data-close-dialog aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-description">다시 보고 싶은 계산을 기억하기 쉽게 남겨 두세요.</p><div id="save-preview" class="save-preview"></div><label class="field-label" for="calculation-name">이름</label><input id="calculation-name" class="field-input" maxlength="80" required placeholder="예: 이번 달 재료비" autocomplete="off"><label class="field-label" for="calculation-memo">메모 <span>선택</span></label><textarea id="calculation-memo" class="field-input" rows="3" maxlength="500" placeholder="이 계산에 대해 기억할 내용을 적어 보세요."></textarea><div class="dialog-actions"><button type="button" class="button" data-close-dialog>취소</button><button type="submit" class="button button-primary">저장하기</button></div></form></dialog>
   <dialog id="confirm-dialog" class="app-dialog small-dialog"><form method="dialog"><h2 id="confirm-title">기록을 지울까요?</h2><p id="confirm-message" class="dialog-description"></p><div class="dialog-actions"><button class="button" value="cancel">취소</button><button class="button button-danger" value="confirm">지우기</button></div></form></dialog>

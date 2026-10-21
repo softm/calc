@@ -1,6 +1,7 @@
 window.CALC_AD_CONFIG = Object.freeze({
   enabled: true,
   script: "https://t1.kakaocdn.net/kas/static/ba.min.js",
+  // Existing calc-only unit. Keep its issued size when changing the placement.
   placement: Object.freeze({
     unit: "DAN-HOdtmmqJByjVatTN",
     width: 320,

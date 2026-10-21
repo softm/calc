@@ -1,0 +1,118 @@
+/* The calculator scrolls in its own viewport, above the bottom banner. */
+:root { --calc-ad-space: 0px; }
+
+body.adfit-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.adfit-layout > .app-viewport {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-padding-block: 84px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.adfit-zone {
+  position: relative;
+  flex: 0 0 auto;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 env(safe-area-inset-bottom, 0px);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  z-index: 45;
+  box-shadow: 0 -4px 18px rgb(23 26 22 / 5%);
+}
+
+.adfit-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: min(100%, 420px);
+  min-height: 44px;
+  margin-inline: auto;
+  padding-inline: 16px 6px;
+}
+
+.adfit-label {
+  position: static;
+  width: auto;
+  transform: none;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .02em;
+}
+
+.adfit-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  min-width: 108px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 650;
+  touch-action: manipulation;
+}
+
+.adfit-toggle:hover { background: var(--surface-soft); }
+.adfit-toggle:focus-visible { outline-offset: -4px; }
+.adfit-toggle [data-adfit-toggle-icon] { font-size: 17px; line-height: 1; }
+.adfit-toggle:active:not(:disabled) { transform: none; }
+
+.adfit-panel {
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  background: var(--surface-soft);
+}
+
+.adfit-host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100px;
+}
+
+/* Leave the issued 320 × 100 creative intact, including on a 320px screen. */
+.adfit-host > .kakao_ad_area { flex: 0 0 320px; }
+
+.adfit-layout .toast {
+  bottom: calc(var(--calc-ad-space) + 20px);
+  animation-name: calc-ad-toast-in;
+}
+
+@keyframes calc-ad-toast-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 700px) {
+  .adfit-layout .install-button { bottom: calc(var(--calc-ad-space) + 18px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adfit-toggle, .adfit-layout .toast { transition: none; animation: none; }
+}
+
+@media print {
+  body.adfit-layout { display: block; height: auto; overflow: visible; }
+  .adfit-layout > .app-viewport { overflow: visible; }
+  .adfit-zone { display: none !important; }
+}
