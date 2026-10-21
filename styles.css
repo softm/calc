@@ -9,6 +9,10 @@ body[data-theme="dark"]{color-scheme:dark;--canvas:#131d18;--surface:#1d2921;--s
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}}
 
 .storage-warning{padding:12px 13px;border:1px solid #e1bd7d;border-radius:10px;background:#fff9e9;color:#795316;font-size:11px;line-height:1.7;margin:12px 0 0}
+.adfit-zone{position:relative;width:100%;min-height:118px;margin:24px auto 0;padding:17px 0 1px;overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface-soft)}
+.adfit-zone[hidden]{display:none}
+.adfit-label{position:absolute;top:3px;left:50%;width:320px;transform:translateX(-50%);color:var(--muted);font-size:9px;font-weight:700}
+.adfit-host{display:grid;place-items:center;width:100%;min-height:100px}
 body[data-theme="dark"] .notes-btn-primary{background:#3c7856;color:#fff;border-color:#3c7856}
 
 @media(max-width:440px){.nav-tab{padding:9px 10px;font-size:11px}.nav-tab .icon{display:none}}
