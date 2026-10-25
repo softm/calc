@@ -181,9 +181,7 @@ export function mountNotes(container, { toast = () => {}, onStorageError = () =>
       fillSummary(entry, note);
       list.append(entry);
     }
-    if (!state.notes.length) list.append(element('p', 'notes-sidebar-empty', '계산을 작업별로\n모아 보관하세요.'));
-    const localHint = element('p', 'notes-local-hint', '메모는 이 브라우저에 저장돼요. 중요한 계산은 CSV로 보관하세요.');
-    sidebar.replaceChildren(heading, add, list, localHint);
+    sidebar.replaceChildren(heading, add, list);
   }
   function fillSummary(entry, note) {
     const result = calculate(note);
@@ -202,11 +200,8 @@ export function mountNotes(container, { toast = () => {}, onStorageError = () =>
     const note = current();
     if (!note) {
       const empty = element('div', 'notes-empty');
-      const symbol = element('span', 'notes-empty-symbol', '≡');
-      symbol.setAttribute('aria-hidden', 'true');
-      empty.append(symbol, element('h2', '', '계산에 이름을 붙여 보세요'),
-        element('p', '', '항목과 수량, 단가를 적으면 합계가 바로 나와요.\n필요할 때 다시 수정하고 함께 공유하세요.'),
-        button('첫 메모 만들기', 'notes-btn-primary', () => addNote()));
+      empty.append(element('h2', '', '계산노트가 없습니다.'),
+        button('새 메모 만들기', 'notes-btn-primary', () => addNote()));
       editor.replaceChildren(empty);
       return;
     }
@@ -268,12 +263,11 @@ export function mountNotes(container, { toast = () => {}, onStorageError = () =>
     });
     const total = element('div', 'notes-total');
     const totalLabel = element('div');
-    totalLabel.append(element('span', 'notes-total-label', '합계'), element('span', 'notes-total-hint', '수량 × 단가의 합계'));
+    totalLabel.append(element('span', 'notes-total-label', '합계'));
     const totalValue = element('output', 'notes-total-value');
     totalValue.setAttribute('aria-label', '계산 메모 합계');
     total.append(totalLabel, totalValue);
-    const help = element('p', 'notes-help', '빈 수량·단가는 0으로 계산해요. 소수는 마침표(.)로 입력하세요. 세금은 자동으로 더하지 않아요.');
-    editor.replaceChildren(header, toolbar, table, addRow, total, help);
+    editor.replaceChildren(header, toolbar, table, addRow, total);
     updateAmounts(); updateSavedLabel();
   }
   function updateAmounts() {
