@@ -10,7 +10,12 @@ export function evaluateCalculatorExpression(expression, { mode = 'basic', angle
   if (typeof expression !== 'string' || expression.length > 2048) {
     throw new Error('계산식이 너무 깁니다.');
   }
-  const match = expression.trim().match(/^(.+)\s*([+−-])\s*((?:\d+(?:\.\d*)?|\.\d+))\s*%$/u);
+  const trimmed = expression.trim();
+  // A numeric exponent such as 1e+2% is a single percentage, not addition.
+  if (/^[+−-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+−-]?\d+)%$/u.test(trimmed)) {
+    return evaluateExpression(trimmed, { angleMode });
+  }
+  const match = trimmed.match(/^(.+?)\s*([+−-])\s*((?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+−-]?\d+)?)\s*%$/u);
   if (!match) return evaluateExpression(expression, { angleMode });
   const base = evaluateCalculatorExpression(match[1].trim(), { mode: 'office', angleMode });
   const percentValue = evaluateExpression(`(${base.value})×(${match[3]}%)`, { angleMode });
