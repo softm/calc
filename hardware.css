@@ -80,3 +80,92 @@ body[data-theme="dark"] .office-registers button{color:#d7f85e}
  body[data-calc-mode="office"] .keypad .key{min-height:56px}
 }
 @media(prefers-reduced-motion:reduce){.office-keys button,.history-item{transition:none}}
+
+/* Workspace density pass (2026-10-26): prioritize the working calculator,
+   preserve 44px minimum touch targets on small screens. */
+.app-header{height:60px}
+.app-main{margin-top:12px}
+.calculator-layout{gap:16px}
+.calculator-card{padding:20px}
+.history-panel{padding:18px;min-height:0}
+.history-list{flex:0 1 auto;min-height:0;max-height:min(450px,55vh);margin-top:10px}
+.history-compact-empty{margin:0;padding:18px 8px;text-align:center;color:var(--muted);font-size:12px}
+.history-filters{margin:11px 0 10px}
+.history-search{padding:9px 11px}
+.history-item{padding:11px 12px 9px;margin-bottom:8px}
+.calc-display{min-height:128px;margin:13px 0 14px;padding:17px 17px 12px}
+#expression{height:30px;font-size:19px}
+.result-line{min-height:55px;margin-top:2px}
+#result{font-size:clamp(34px,4.4vw,52px)}
+.calculation-status{min-height:0;margin-top:4px;font-size:10px}
+.calculation-status:empty{display:none}
+.keypad{gap:8px}
+.key{min-height:59px}
+body[data-calc-mode="office"] .keypad .key{min-height:59px}
+.calculation-actions{margin-top:12px;padding-top:9px}
+.office-registers{margin-top:11px;margin-bottom:-3px}
+.office-keys{gap:7px;margin-bottom:12px}
+.notes-layout{min-height:0;gap:16px}
+.notes-sidebar{gap:9px}
+.notes-sidebar-heading{padding:13px 15px 6px}
+.notes-new{min-height:42px;margin-top:-9px}
+.notes-list{gap:7px}
+.notes-entry{padding:12px}
+.notes-editor{padding:20px}
+.notes-title-label{gap:0}
+.notes-title-label>span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.notes-title-input{padding:1px 0 5px;font-size:clamp(20px,2.1vw,27px)}
+.notes-toolbar{flex-wrap:nowrap;overflow-x:auto;gap:6px;margin:10px 0 15px;padding-bottom:3px;scrollbar-width:thin}
+.notes-toolbar .notes-btn{flex:0 0 auto;min-height:40px;padding:8px 11px;white-space:nowrap}
+.notes-row{padding:8px}
+.notes-add-row{margin-top:10px}
+.notes-total{margin-top:16px;padding:14px 16px;gap:12px}
+.notes-total-value{min-width:0;padding:10px 15px}
+.notes-empty{min-height:155px;gap:14px;padding:8px 0}
+.notes-empty h2{font-size:17px}
+.notes-empty .notes-btn{min-height:42px}
+.app-footer{max-width:1210px;margin:12px auto 0;padding:8px clamp(14px,4vw,52px) 16px;justify-content:flex-end;border-top:0}
+.app-footer button{font-size:11px}
+@media(max-width:980px){
+ .app-main{margin-top:10px}
+ .calculator-layout{gap:14px}
+ .calculator-card,.history-panel{padding:17px}
+ .notes-editor{padding:18px}
+}
+@media(max-width:760px){
+ .app-header{height:56px}
+ .app-main{margin-top:8px;padding-inline:12px}
+ .calculator-layout{row-gap:10px}
+ .calculator-card,.history-panel{padding:14px;border-radius:18px}
+ .calc-display{min-height:115px;margin:10px 0 12px;padding:14px}
+ .result-line{min-height:50px}
+ #result{font-size:clamp(34px,7vw,43px)}
+ .key{min-height:54px}
+ body[data-calc-mode="office"] .keypad .key{min-height:54px}
+ .office-keys{gap:6px;margin-bottom:9px}
+ .calculation-actions{margin-top:9px;padding-top:7px}
+ .history-mobile-toggle{min-height:44px;padding:9px 14px;border-radius:14px}
+ .history-list{max-height:48vh}
+ .notes-layout{gap:10px}
+ .notes-sidebar-heading{padding:10px 12px 4px}
+ .notes-new{min-height:42px}
+ .notes-editor{padding:15px}
+ .notes-toolbar{margin:8px 0 12px}
+ .notes-total{margin-top:12px;padding:12px}
+ .notes-total-value{padding:10px;font-size:25px}
+ .notes-empty{min-height:125px}
+ .app-footer{padding:6px 14px 12px}
+}
+@media(max-width:430px){
+ .app-main{padding-inline:9px}
+ .calculator-card,.history-panel{padding:12px}
+ .calc-display{padding:12px;min-height:110px}
+ #result{font-size:36px}
+ .key{min-height:50px}
+ body[data-calc-mode="office"] .keypad .key{min-height:50px}
+ .scientific-keys button,.office-keys button{min-height:42px}
+ .notes-editor{padding:12px}
+ .notes-toolbar .notes-btn{min-height:42px}
+ .notes-row{padding:10px}
+ .notes-input{min-height:44px}
+}
