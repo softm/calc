@@ -67,11 +67,11 @@
   <div id="update-banner" class="update-banner" hidden>새로운 버전이 준비됐어요. <button id="update-button">업데이트</button></div>
   <main id="main" class="app-main">
     <section id="calculator-view" role="tabpanel" aria-labelledby="tab-calc">
-      <div class="workspace-heading"><div><p class="eyebrow">YOUR EVERYDAY COMPANION</p><h1>계산은 가볍게<span>.</span></h1><p class="intro">필요한 계산은 바로, 기억할 계산은 오래.</p></div><span class="local-badge"><span></span>내 기기에 저장</span></div>
+      <h1 class="sr-only">계산기</h1>
       <div class="calculator-layout">
         <section class="calculator-card" aria-label="계산기">
           <div class="calculator-toolbar">
-            <div class="mode-switch" role="group" aria-label="계산 모드"><button id="basic-mode" class="selected" aria-pressed="true">기본</button><button id="office-mode" aria-pressed="false">사무</button><button id="scientific-mode" aria-pressed="false">공학</button></div>
+            <div class="mode-switch" role="group" aria-label="계산 모드"><button id="basic-mode" class="selected" aria-pressed="true">기본</button><button id="office-mode" aria-pressed="false" title="금액 기준 퍼센트와 메모리 기능">사무</button><button id="scientific-mode" aria-pressed="false">공학</button></div>
             <div class="calculator-tools"><button id="angle-button" class="angle-button" title="각도 단위 변경" aria-label="각도 단위: DEG">DEG</button><button id="backspace-button" class="icon-button" aria-label="한 글자 지우기" title="한 글자 지우기 · Backspace"><svg class="icon"><use href="#i-backspace"/></svg></button></div>
           </div>
           <div id="office-registers" class="office-registers" hidden aria-label="사무용 계산 메모리">
@@ -80,11 +80,10 @@
             <button type="button" id="gt-clear-button" title="누적 합계 지우기">GT 초기화</button>
           </div>
           <div class="calc-display">
-            <div class="display-label"><span id="expression-caption">계산식</span><span id="precision-label">십진 계산</span></div>
             <label class="sr-only" for="expression">계산식</label>
             <input id="expression" type="text" inputmode="none" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="2048" placeholder="0" aria-describedby="calculation-status">
             <div class="result-line"><span id="approximation" class="approximation" hidden>≈</span><output id="result" for="expression" aria-live="polite" aria-atomic="true">0</output></div>
-            <div id="calculation-status" class="calculation-status" role="status">숫자판이나 키보드로 입력하세요</div>
+            <div id="calculation-status" class="calculation-status" role="status"></div>
           </div>
           <div id="scientific-keys" class="scientific-keys" hidden aria-label="공학 함수">
             <button data-insert="sin(">sin</button><button data-insert="cos(">cos</button><button data-insert="tan(">tan</button><button data-insert="sqrt(" aria-label="제곱근">√</button><button data-insert="^2" aria-label="제곱">x²</button><button data-insert="^" aria-label="거듭제곱">xʸ</button>
@@ -119,14 +118,12 @@
           <label class="history-search"><svg class="icon"><use href="#i-search"/></svg><input id="history-search" type="search" placeholder="이름이나 계산식 검색" aria-label="계산 기록 검색"></label>
           <p id="history-storage-warning" class="storage-warning" role="status" hidden></p>
           <div id="history-list" class="history-list"></div>
-          <div class="history-tip"><span class="tip-icon">↖</span><p>기록을 누르면 다시 계산할 수 있어요.<br><strong>이름을 붙이면</strong> 더 쉽게 찾을 수 있고요.</p></div>
         </aside>
       </div>
-      <div class="below-calculator"><span><kbd>Enter</kbd> 계산하기 <span class="dot-separator">·</span> <kbd>Esc</kbd> 모두 지우기</span><button id="open-notes" class="text-button">여러 항목을 계산한다면, 계산노트 <svg class="icon"><use href="#i-arrow"/></svg></button></div>
     </section>
-    <section id="notes-view" role="tabpanel" aria-labelledby="tab-notes" hidden><div class="workspace-heading"><div><p class="eyebrow">A LITTLE MORE ORGANIZED</p><h1>숫자에 맥락을<span>.</span></h1><p class="intro">수량과 단가를 바꿔가며, 나만의 계산노트를 만드세요.</p></div><span class="local-badge"><span></span>자동 저장</span></div><div id="notes-container"></div></section>
+    <section id="notes-view" role="tabpanel" aria-labelledby="tab-notes" hidden><h1 class="sr-only">계산노트</h1><div id="notes-container"></div></section>
   </main>
-  <footer class="app-footer"><span class="footer-wordmark">calc.</span><p>계산과 기록, 필요한 만큼 간단하게.</p><button id="privacy-button">저장 안내</button></footer>
+  <footer class="app-footer"><button id="privacy-button" title="저장 방식과 개인정보처리방침">저장·개인정보 안내</button></footer>
   </div>
 
   <aside class="adfit-zone" id="calculator-ad" aria-label="하단 광고" data-state="idle" data-collapsed="false" hidden>
@@ -143,7 +140,7 @@
 
   <dialog id="save-dialog" class="app-dialog"><form id="save-form"><div class="dialog-heading"><h2>계산에 이름 붙이기</h2><button type="button" class="icon-button" data-close-dialog aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-description">다시 보고 싶은 계산을 기억하기 쉽게 남겨 두세요.</p><div id="save-preview" class="save-preview"></div><label class="field-label" for="calculation-name">이름</label><input id="calculation-name" class="field-input" maxlength="80" required placeholder="예: 이번 달 재료비" autocomplete="off"><label class="field-label" for="calculation-memo">메모 <span>선택</span></label><textarea id="calculation-memo" class="field-input" rows="3" maxlength="500" placeholder="이 계산에 대해 기억할 내용을 적어 보세요."></textarea><div class="dialog-actions"><button type="button" class="button" data-close-dialog>취소</button><button type="submit" class="button button-primary">저장하기</button></div></form></dialog>
   <dialog id="confirm-dialog" class="app-dialog small-dialog"><form method="dialog"><h2 id="confirm-title">기록을 지울까요?</h2><p id="confirm-message" class="dialog-description"></p><div class="dialog-actions"><button class="button" value="cancel">취소</button><button class="button button-danger" value="confirm">지우기</button></div></form></dialog>
-  <dialog id="help-dialog" class="app-dialog"><div class="dialog-heading"><h2>조금 더 편하게 쓰기</h2><button class="icon-button" data-close-dialog aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="help-content"><h3>키보드로 바로 계산하세요</h3><dl class="shortcut-list"><div><dt>계산하고 기록 남기기</dt><dd><kbd>Enter</kbd> 또는 <kbd>=</kbd></dd></div><div><dt>모두 지우기</dt><dd><kbd>Esc</kbd></dd></div><div><dt>한 글자 지우기</dt><dd><kbd>Backspace</kbd></dd></div><div><dt>계산식 수정</dt><dd><kbd>←</kbd> <kbd>→</kbd> 또는 계산식 터치</dd></div></dl><h3>계산 규칙</h3><p>곱셈·나눗셈을 덧셈·뺄셈보다 먼저 계산합니다. 괄호로 순서를 지정할 수 있어요.</p><p><strong>기본·공학 모드</strong>에서 %는 100으로 나누기입니다. <code>200 + 10% = 200.1</code>입니다. <strong>사무 모드</strong>에서는 금액 기준으로 <code>200 + 10% = 220</code>, <code>200 − 10% = 180</code>이 됩니다. 곱셈의 %는 어느 모드에서나 <code>200 × 10% = 20</code>입니다.</p><p><strong>사무 기능:</strong> M+·M−는 현재 표시값을 메모리에 더하거나 빼고, MR은 불러오며 MC는 지웁니다. GT는 사무 모드에서 =로 확정한 계산 결과의 누적 합계입니다. MU는 <code>100 ÷ 20</code> 입력 후 누르면 목표 매출이익률 20%에 해당하는 판매가 125를 계산합니다.</p><p>공학 모드의 <strong>DEG</strong>는 도, <strong>RAD</strong>는 라디안입니다. 삼각함수·로그와 일부 나눗셈은 근삿값으로 표시합니다. <strong>≈</strong>가 붙은 값은 반올림된 값이에요.</p><h3>기록과 설치</h3><p><strong>=</strong>을 누르면 계산이 기록됩니다. 이름을 붙여 저장하거나, 기록을 눌러 다시 계산할 수 있어요.</p><p>휴대전화 브라우저 메뉴의 ‘홈 화면에 추가’를 이용하면 앱처럼 열 수 있습니다. 처음 접속해 필요한 파일을 받은 뒤에는 오프라인 계산도 가능해요.</p></div></dialog>
+  <dialog id="help-dialog" class="app-dialog"><div class="dialog-heading"><h2>조금 더 편하게 쓰기</h2><button class="icon-button" data-close-dialog aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="help-content"><h3>키보드로 바로 계산하세요</h3><dl class="shortcut-list"><div><dt>계산하고 기록 남기기</dt><dd><kbd>Enter</kbd> 또는 <kbd>=</kbd></dd></div><div><dt>모두 지우기</dt><dd><kbd>Esc</kbd></dd></div><div><dt>한 글자 지우기</dt><dd><kbd>Backspace</kbd></dd></div><div><dt>계산식 수정</dt><dd><kbd>←</kbd> <kbd>→</kbd> 또는 계산식 터치</dd></div></dl><h3>계산 규칙</h3><p>곱셈·나눗셈을 덧셈·뺄셈보다 먼저 계산합니다. 괄호로 순서를 지정할 수 있어요.</p><p><strong>기본·공학 모드</strong>에서 %는 100으로 나누기입니다. <code>200 + 10% = 200.1</code>입니다. <strong>사무 모드</strong>에서는 금액 기준으로 <code>200 + 10% = 220</code>, <code>200 − 10% = 180</code>이 됩니다. 곱셈의 %는 어느 모드에서나 <code>200 × 10% = 20</code>입니다.</p><p><strong>사무 기능:</strong> M+·M−는 현재 표시값을 메모리에 더하거나 빼고, MR은 불러오며 MC는 지웁니다. GT는 사무 모드에서 =로 확정한 계산 결과의 누적 합계입니다. MU는 <code>100 ÷ 20</code> 입력 후 누르면 목표 매출이익률 20%에 해당하는 판매가 125를 계산합니다.</p><p>공학 모드의 <strong>DEG</strong>는 도, <strong>RAD</strong>는 라디안입니다. 삼각함수·로그와 일부 나눗셈은 근삿값으로 표시합니다. <strong>≈</strong>가 붙은 값은 반올림된 값이에요.</p><h3>계산노트와 저장</h3><p>계산노트는 수량 × 단가를 합산하며 세금을 자동으로 더하지 않습니다. 빈 수량·단가는 0으로 계산합니다. 중요한 메모는 CSV 내보내기로 별도 보관할 수 있습니다.</p><h3>기록과 설치</h3><p><strong>=</strong>을 누르면 계산이 기록됩니다. 이름을 붙여 저장하거나, 기록을 눌러 다시 계산할 수 있어요.</p><p>휴대전화 브라우저 메뉴의 ‘홈 화면에 추가’를 이용하면 앱처럼 열 수 있습니다. 처음 접속해 필요한 파일을 받은 뒤에는 오프라인 계산도 가능해요.</p></div></dialog>
   <dialog id="privacy-dialog" class="app-dialog"><div class="dialog-heading"><h2>내 계산은 내 기기에</h2><button class="icon-button" data-close-dialog aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="help-content"><p>계산식, 메모, 계산노트와 테마 설정은 현재 브라우저의 저장 공간에 보관합니다. 계산 내용을 서버로 전송하지 않습니다.</p><p>다른 기기나 브라우저와 자동으로 동기화되지 않습니다. 브라우저 데이터를 지우거나 비공개 창을 닫으면 기록이 사라질 수 있으니, 필요한 기록은 내보내기로 보관하세요.</p><p>이름 없는 계산은 최근 200개까지 자동 보관합니다. 이름을 붙인 계산은 최대 1,000개까지 저장하며 자동 정리에서 제외됩니다. 공유는 공유 버튼을 직접 눌렀을 때만 진행됩니다.</p><p>웹에서는 카카오 AdFit, Android 앱에서는 Google AdMob이 광고 제공·측정·부정 사용 방지를 위해 기기 및 광고 상호작용 정보를 처리할 수 있습니다. 계산식과 계산 기록은 광고 사업자에게 전달하지 않습니다.</p><p><a href="./privacy.html">전체 개인정보처리방침 보기</a></p></div></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden><svg class="icon"><use href="#i-check"/></svg><span id="toast-message"></span><button id="toast-action" hidden>되돌리기</button></div>
   <noscript><div class="noscript-message">계산기를 사용하려면 브라우저에서 JavaScript를 켜 주세요. 계산은 기기 안에서 이루어집니다.</div></noscript>
