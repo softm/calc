@@ -121,12 +121,11 @@ function updatePreview(showError = false) {
   const text = expression.value.trim();
   const status = $('calculation-status');
   status.classList.remove('error');
-  $('precision-label').textContent = state.mode === 'scientific' ? `공학 계산 · ${state.angleMode}` : state.mode === 'office' ? '사무 계산 · 금액 기준 %' : '십진 계산';
   if (!text) {
     $('result').textContent = '0';
     $('result').className = '';
     $('approximation').hidden = true;
-    status.textContent = '숫자판이나 키보드로 입력하세요';
+    status.textContent = '';
   } else {
     try {
       const evaluated = evaluateCalculatorExpression(text, { mode: state.mode, angleMode: state.angleMode });
@@ -137,13 +136,13 @@ function updatePreview(showError = false) {
       $('result').className = display.length > 20 ? 'result-small' : display.length > 13 ? 'result-medium' : '';
       $('approximation').hidden = !approximate;
       status.textContent = state.committed
-        ? (historyStorageFailed ? '이 창에서만 유지돼요 · 기록을 내보내 주세요' : approximate ? '근삿값 · 계산 기록에 남겼어요' : '계산 기록에 남겼어요')
-        : (approximate ? '근삿값 · 소수점 아래 최대 12자리 표시' : '= 을 누르면 기록에 남아요');
+        ? (historyStorageFailed ? '저장 실패 · 기록을 내보내 주세요' : approximate ? '근삿값 · 기록됨' : '기록됨')
+        : (approximate ? '근삿값' : '');
     } catch (error) {
       $('result').textContent = '—';
       $('result').className = '';
       $('approximation').hidden = true;
-      status.textContent = showError ? error.message : '계산식을 이어서 입력하세요';
+      status.textContent = showError ? error.message : '';
       status.classList.toggle('error', showError);
     }
   }
@@ -322,13 +321,8 @@ function renderHistory() {
   const list = $('history-list');
   list.replaceChildren();
   if (!items.length) {
-    const empty = element('div', 'history-empty');
-    const artwork = element('div', 'empty-art');
-    artwork.append(icon(search ? 'search' : 'note'));
-    empty.append(artwork, element('h3', '', search ? '찾는 계산이 없어요' : state.filter === 'saved' ? '기억할 계산을 남겨 보세요' : '첫 계산을 기다리고 있어요'));
-    const desc = element('p', '', search ? '다른 이름이나 계산식으로 검색해 보세요.' : state.filter === 'saved' ? '계산 후 ‘이름 붙여 저장’을 눌러 보세요.' : '= 을 누르면 계산이 여기에 쌓여요.');
-    empty.append(desc);
-    list.append(empty);
+    const message = search ? '검색 결과가 없습니다.' : state.filter === 'saved' ? '저장한 계산이 없습니다.' : '아직 계산 기록이 없습니다.';
+    list.append(element('p', 'history-compact-empty', message));
     return;
   }
   for (const entry of items) {
@@ -499,7 +493,6 @@ $('export-history').addEventListener('click', () => {
 });
 for (const button of document.querySelectorAll('[data-view]')) button.addEventListener('click', () => switchView(button.dataset.view));
 document.querySelector('.workspace-nav').addEventListener('keydown', event => { if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) { event.preventDefault(); switchView(event.key === 'Home' ? 'calc' : event.key === 'End' ? 'notes' : state.view === 'calc' ? 'notes' : 'calc', true); } });
-$('open-notes').addEventListener('click', () => switchView('notes', true));
 $('theme-select').addEventListener('change', event => { document.body.dataset.theme = event.target.value; syncTheme(); saveSettings(); });
 $('help-button').addEventListener('click', () => $('help-dialog').showModal());
 $('privacy-button').addEventListener('click', () => $('privacy-dialog').showModal());
