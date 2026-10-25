@@ -19,6 +19,9 @@ test('기본·공학 모드는 기존 퍼센트 계산을 유지한다', () => {
   assert.equal(calc('200 + 10%', 'basic'), '200.1');
   assert.equal(calc('200 + 10%', 'scientific'), '200.1');
   assert.equal(calc('0.1 + 0.2', 'office'), '0.3');
+  assert.equal(calc('1e+2%'), '1');
+  assert.equal(calc('200 + 1e+2%'), '400');
+  assert.equal(calc('200 + 1e-2%'), '200.02');
 });
 
 test('MU는 원가 대비 목표 매출이익률을 적용하고 오류를 구분한다', () => {
