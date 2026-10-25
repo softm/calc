@@ -1,12 +1,13 @@
 import { evaluateExpression, formatNumber } from './engine.js';
 import { mountNotes } from './notes.js';
 import { insertCalculatorText, toggleCalculatorSign } from './input.js';
+import { evaluateCalculatorExpression, createMarkupExpression, addRegister } from './office.js';
 
 const $ = id => document.getElementById(id);
 const HISTORY_KEY = 'calc.history.v1';
 const SETTINGS_KEY = 'calc.settings.v1';
 const expression = $('expression');
-const state = { mode: 'basic', angleMode: 'DEG', committed: false, result: null, entryId: null, carryApproximate: false, filter: 'all', view: 'calc' };
+const state = { mode: 'basic', angleMode: 'DEG', committed: false, result: null, entryId: null, carryApproximate: false, filter: 'all', view: 'calc', memoryValue: '0', memoryApproximate: false, grandTotalValue: '0', grandTotalApproximate: false };
 let history = [];
 let historyWritable = true;
 let historyStorageFailed = false;
@@ -46,9 +47,14 @@ function readSettings() {
     if (!raw) return;
     if (raw.length > 10000) throw new Error('설정이 너무 큽니다.');
     const settings = JSON.parse(raw);
-    if (settings && ['light', 'dark'].includes(settings.theme)) document.body.dataset.theme = settings.theme;
-    if (settings && ['basic', 'scientific'].includes(settings.mode)) state.mode = settings.mode;
+    if (settings && ['light', 'dark', 'cream', 'pink'].includes(settings.theme)) document.body.dataset.theme = settings.theme;
+    if (settings && ['basic', 'office', 'scientific'].includes(settings.mode)) state.mode = settings.mode;
     if (settings && ['DEG', 'RAD'].includes(settings.angleMode)) state.angleMode = settings.angleMode;
+    const numeric = /^-?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
+    if (typeof settings?.memoryValue === 'string' && settings.memoryValue.length < 250 && numeric.test(settings.memoryValue)) state.memoryValue = settings.memoryValue;
+    if (typeof settings?.grandTotalValue === 'string' && settings.grandTotalValue.length < 250 && numeric.test(settings.grandTotalValue)) state.grandTotalValue = settings.grandTotalValue;
+    state.memoryApproximate = settings?.memoryApproximate === true;
+    state.grandTotalApproximate = settings?.grandTotalApproximate === true;
     if (typeof settings?.expression === 'string' && settings.expression.length <= 2048) expression.value = settings.expression;
     state.carryApproximate = settings?.carryApproximate === true;
   } catch { settingsWritable = false; toast('설정을 읽지 못했어요. 이 창에서는 기본 설정으로 사용합니다.'); }
@@ -56,7 +62,7 @@ function readSettings() {
 function saveSettings() {
   if (!settingsWritable) return;
   try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ version: 1, mode: state.mode, angleMode: state.angleMode, expression: expression.value, theme: document.body.dataset.theme || 'light', carryApproximate: state.carryApproximate }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ version: 1, mode: state.mode, angleMode: state.angleMode, expression: expression.value, theme: document.body.dataset.theme || 'light', carryApproximate: state.carryApproximate, memoryValue: state.memoryValue, memoryApproximate: state.memoryApproximate, grandTotalValue: state.grandTotalValue, grandTotalApproximate: state.grandTotalApproximate }));
   } catch { settingsWritable = false; toast('기기에 저장할 공간이 부족해요. 필요한 기록을 내보내 주세요.'); }
 }
 function queueSettings() { clearTimeout(settingsTimer); settingsTimer = setTimeout(saveSettings, 200); }
@@ -74,7 +80,7 @@ function readHistory() {
     if (data?.version !== 1 || !Array.isArray(data.items) || data.items.length > 5000) throw new Error('알 수 없는 기록입니다.');
     const ids = new Set();
     for (const entry of data.items) {
-      if (!entry || typeof entry.id !== 'string' || !/^[a-zA-Z0-9-]{1,90}$/.test(entry.id) || ids.has(entry.id) || typeof entry.expression !== 'string' || entry.expression.length > 2048 || typeof entry.value !== 'string' || entry.value.length > 2048 || !/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(entry.value) || typeof entry.name !== 'string' || entry.name.length > 80 || typeof entry.memo !== 'string' || entry.memo.length > 500 || !['DEG', 'RAD'].includes(entry.angleMode) || !Number.isFinite(Date.parse(entry.createdAt))) throw new Error('손상된 기록입니다.');
+      if (!entry || typeof entry.id !== 'string' || !/^[a-zA-Z0-9-]{1,90}$/.test(entry.id) || ids.has(entry.id) || typeof entry.expression !== 'string' || entry.expression.length > 2048 || typeof entry.value !== 'string' || entry.value.length > 2048 || !/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(entry.value) || typeof entry.name !== 'string' || entry.name.length > 80 || typeof entry.memo !== 'string' || entry.memo.length > 500 ||  !['DEG', 'RAD'].includes(entry.angleMode) || (entry.mode !== undefined && !['basic', 'office', 'scientific'].includes(entry.mode)) || !Number.isFinite(Date.parse(entry.createdAt))) throw new Error('손상된 기록입니다.');
       ids.add(entry.id);
     }
     history = data.items;
@@ -115,7 +121,7 @@ function updatePreview(showError = false) {
   const text = expression.value.trim();
   const status = $('calculation-status');
   status.classList.remove('error');
-  $('precision-label').textContent = state.mode === 'scientific' ? `공학 계산 · ${state.angleMode}` : '십진 계산';
+  $('precision-label').textContent = state.mode === 'scientific' ? `공학 계산 · ${state.angleMode}` : state.mode === 'office' ? '사무 계산 · 금액 기준 %' : '십진 계산';
   if (!text) {
     $('result').textContent = '0';
     $('result').className = '';
@@ -123,7 +129,7 @@ function updatePreview(showError = false) {
     status.textContent = '숫자판이나 키보드로 입력하세요';
   } else {
     try {
-      const evaluated = evaluateExpression(text, { angleMode: state.angleMode });
+      const evaluated = evaluateCalculatorExpression(text, { mode: state.mode, angleMode: state.angleMode });
       if (state.carryApproximate) evaluated.approximate = true;
       state.result = evaluated;
       const { display, approximate } = displayResult(evaluated);
@@ -144,15 +150,68 @@ function updatePreview(showError = false) {
   for (const id of ['save-button', 'copy-button', 'share-button']) $(id).disabled = !state.result;
   queueSettings();
 }
+function renderOfficeRegisters() {
+  $('memory-indicator').textContent = formatNumber(state.memoryValue, { maxFractionDigits: 6 });
+  $('gt-indicator').textContent = formatNumber(state.grandTotalValue, { maxFractionDigits: 6 });
+}
 function updateModes() {
-  $('basic-mode').classList.toggle('selected', state.mode === 'basic');
-  $('scientific-mode').classList.toggle('selected', state.mode === 'scientific');
-  $('basic-mode').setAttribute('aria-pressed', String(state.mode === 'basic'));
-  $('scientific-mode').setAttribute('aria-pressed', String(state.mode === 'scientific'));
+  for (const name of ['basic', 'office', 'scientific']) {
+    $(name + '-mode').classList.toggle('selected', state.mode === name);
+    $(name + '-mode').setAttribute('aria-pressed', String(state.mode === name));
+  }
+  document.body.dataset.calcMode = state.mode;
   $('scientific-keys').hidden = state.mode !== 'scientific';
+  $('office-keys').hidden = state.mode !== 'office';
+  $('office-registers').hidden = state.mode !== 'office';
+  $('angle-button').hidden = state.mode !== 'scientific';
   $('angle-button').textContent = state.angleMode;
-  $('angle-button').setAttribute('aria-label', `각도 단위: ${state.angleMode}`);
+  $('angle-button').setAttribute('aria-label', '각도 단위: ' + state.angleMode);
+  renderOfficeRegisters();
   updatePreview();
+}
+function setResultExpression(value, approximate = false) {
+  if (value.length > 2048) throw new Error('숫자가 너무 길어 한 번에 표시할 수 없습니다.');
+  expression.value = normalize(value);
+  state.carryApproximate = approximate;
+  state.committed = false;
+  state.entryId = null;
+  expression.focus({ preventScroll: true });
+  expression.setSelectionRange(expression.value.length, expression.value.length);
+  updatePreview();
+}
+function officeAction(action) {
+  try {
+    if (action === '00') return insert('00');
+    if (action === 'mc') {
+      state.memoryValue = '0';
+      state.memoryApproximate = false;
+      renderOfficeRegisters(); queueSettings();
+      return toast('메모리를 지웠어요.');
+    }
+    if (action === 'mr') return setResultExpression(state.memoryValue, state.memoryApproximate);
+    if (action === 'gt') return setResultExpression(state.grandTotalValue, state.grandTotalApproximate);
+    if (action === 'mplus' || action === 'mminus') {
+      if (!state.result) throw new Error('먼저 계산할 숫자나 수식을 입력하세요.');
+      const summed = addRegister(state.memoryValue, state.result.value, {
+        subtract: action === 'mminus',
+        approximate: state.memoryApproximate || state.result.approximate
+      });
+      state.memoryValue = summed.value;
+      state.memoryApproximate = summed.approximate;
+      renderOfficeRegisters(); queueSettings();
+      return toast(action === 'mplus' ? 'M+ 메모리에 더했어요.' : 'M− 메모리에서 뺐어요.');
+    }
+    if (action === 'sqrt') {
+      if (!state.result) throw new Error('제곱근을 구할 값을 입력하세요.');
+      return setResultExpression('sqrt(' + state.result.value + ')', state.result.approximate);
+    }
+    if (action === 'mu') {
+      const marked = createMarkupExpression(expression.value, state.angleMode);
+      setResultExpression(marked.expression, marked.approximate);
+      commit();
+      return toast('목표 매출이익률을 반영했어요.');
+    }
+  } catch (error) { toast(error.message); }
 }
 function normalize(text) { return text.replaceAll('*', '×').replaceAll('/', '÷').replaceAll('-', '−'); }
 function currentEdit() {
@@ -202,7 +261,15 @@ function commit() {
     const existing = history.find(entry => entry.id === state.entryId);
     if (existing) return existing;
   }
-  const entry = { id: uid(), expression: expression.value.trim(), value: state.result.value, approximate: state.result.approximate, angleMode: state.angleMode, name: '', memo: '', createdAt: new Date().toISOString() };
+  const entry = { id: uid(), expression: expression.value.trim(), value: state.result.value, approximate: state.result.approximate, angleMode: state.angleMode, mode: state.mode, name: '', memo: '', createdAt: new Date().toISOString() };
+  if (state.mode === 'office') {
+    try {
+      const total = addRegister(state.grandTotalValue, entry.value, { approximate: state.grandTotalApproximate || entry.approximate });
+      state.grandTotalValue = total.value;
+      state.grandTotalApproximate = total.approximate;
+      renderOfficeRegisters();
+    } catch { toast('GT 합계의 표시 범위를 넘었습니다. 이 계산은 기록에 남겨요.'); }
+  }
   history.unshift(entry);
   trimHistory();
   state.entryId = entry.id;
@@ -232,7 +299,9 @@ function recall(entry) {
   state.carryApproximate = entry.approximate === true;
   state.committed = false;
   state.entryId = entry.id;
-  if (/[a-zπ√^!]/i.test(entry.expression)) state.mode = 'scientific';
+  if (entry.mode) state.mode = entry.mode;
+  else if (/[a-zπ√^!]/i.test(entry.expression)) state.mode = 'scientific';
+  else state.mode = 'basic';
   updateModes();
   expression.focus({ preventScroll: true });
   expression.setSelectionRange(expression.value.length, expression.value.length);
@@ -241,6 +310,7 @@ function recall(entry) {
 }
 function renderHistory() {
   $('history-count').textContent = String(history.length);
+  $('history-toggle-count').textContent = String(history.length);
   $('export-history').disabled = !history.length;
   $('clear-history').disabled = !history.length;
   $('all-history').classList.toggle('active', state.filter === 'all');
@@ -345,10 +415,7 @@ function switchView(view, focusTab = false) {
   document.title = view === 'notes' ? '계산노트 · calc' : 'calc · 계산과 기록을 한곳에';
 }
 function syncTheme() {
-  const dark = document.body.dataset.theme === 'dark';
-  const button = $('theme-button');
-  button.replaceChildren(icon(dark ? 'sun' : 'moon'));
-  button.setAttribute('aria-label', dark ? '밝은 테마로 변경' : '어두운 테마로 변경');
+  $('theme-select').value = document.body.dataset.theme || 'light';
 }
 
 readSettings(); readHistory();
@@ -384,7 +451,14 @@ for (const button of document.querySelectorAll('[data-action]')) {
 $('backspace-button').addEventListener('pointerdown', event => event.preventDefault());
 $('backspace-button').addEventListener('click', backspace);
 $('basic-mode').addEventListener('click', () => { state.mode = 'basic'; updateModes(); });
+$('office-mode').addEventListener('click', () => { state.mode = 'office'; updateModes(); });
 $('scientific-mode').addEventListener('click', () => { state.mode = 'scientific'; updateModes(); });
+for (const button of document.querySelectorAll('[data-office]')) {
+  button.addEventListener('pointerdown', event => event.preventDefault());
+  button.addEventListener('click', () => officeAction(button.dataset.office));
+}
+$('gt-clear-button').addEventListener('click', () => { state.grandTotalValue = '0'; state.grandTotalApproximate = false; renderOfficeRegisters(); queueSettings(); toast('GT 합계를 지웠어요.'); });
+$('history-toggle').addEventListener('click', () => { const expanded = $('history-toggle').getAttribute('aria-expanded') !== 'true'; $('history-toggle').setAttribute('aria-expanded', String(expanded)); $('history-panel').dataset.collapsed = String(!expanded); });
 $('angle-button').addEventListener('click', () => { state.angleMode = state.angleMode === 'DEG' ? 'RAD' : 'DEG'; state.committed = false; state.entryId = null; updateModes(); });
 $('save-button').addEventListener('click', () => openSave());
 $('save-form').addEventListener('submit', event => {
@@ -426,7 +500,7 @@ $('export-history').addEventListener('click', () => {
 for (const button of document.querySelectorAll('[data-view]')) button.addEventListener('click', () => switchView(button.dataset.view));
 document.querySelector('.workspace-nav').addEventListener('keydown', event => { if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) { event.preventDefault(); switchView(event.key === 'Home' ? 'calc' : event.key === 'End' ? 'notes' : state.view === 'calc' ? 'notes' : 'calc', true); } });
 $('open-notes').addEventListener('click', () => switchView('notes', true));
-$('theme-button').addEventListener('click', () => { document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark'; syncTheme(); saveSettings(); });
+$('theme-select').addEventListener('change', event => { document.body.dataset.theme = event.target.value; syncTheme(); saveSettings(); });
 $('help-button').addEventListener('click', () => $('help-dialog').showModal());
 $('privacy-button').addEventListener('click', () => $('privacy-dialog').showModal());
 for (const button of document.querySelectorAll('[data-close-dialog]')) button.addEventListener('click', () => button.closest('dialog').close());
