@@ -50,6 +50,10 @@ async function resolveAsset(raw, owner) {
     fail(owner + ': 잘못된 리소스 경로: ' + reference);
     return null;
   }
+  // The shared account module is an explicit online-only dependency; offline calculator assets stay local.
+  if (url.origin === PAGES_BASE.origin && url.pathname === '/shared/platform/v1/boot.mjs' &&
+      url.searchParams.get('site') === 'calc' && url.searchParams.get('v') === '20261028' &&
+      [...url.searchParams.keys()].every(key => ['site','v'].includes(key)) && !url.hash) return null;
   if (url.origin !== PAGES_BASE.origin || !url.pathname.startsWith(PAGES_BASE.pathname)) {
     fail(owner + ': 앱 범위 밖의 리소스 참조: ' + reference);
     return null;
